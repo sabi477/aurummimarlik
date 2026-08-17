@@ -1,69 +1,148 @@
-import Image from "next/image";
+import Link from "next/link";
+import Header from "@/components/Header";
+import Footer from "@/components/Footer";
+import Hero from "@/components/Hero";
+import BlogCurtainGrid from "@/components/BlogCurtainGrid";
+import CatalogSection from "@/components/CatalogSection";
+import InstagramEmbed from "@/components/InstagramEmbed";
+import ReelsStrip from "@/components/ReelsStrip";
+import { SectionHead } from "@/components/SectionHead";
+import Reveal from "@/components/Reveal";
+import { aboutPost, posts, projects, studio } from "@/lib/data";
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
+    <>
+      <Header variant="overlay" />
+      <main>
+        <Hero />
+
+        {/* Hakkımızda — siteye giren kişinin ilk okuduğu yer: ne yaptığımız,
+            nerede olduğumuz ve hangi ölçekte çalıştığımız. */}
+        <section className="border-t rule">
+          {/* Bölüm ikiye bölünüyor: solda görsel, sağda metin.
+              Görsel masaüstünde ekrana yapışıp sabit kalıyor; metin onun
+              yanında akıyor. Metin bitince bölüm de bitiyor ve bir sonraki
+              bölüm (Kategoriler) görselin üzerine gelip onu iterek giriyor. */}
+          <div className="grid grid-cols-12 items-stretch">
+            {/* Yapışkan sütun: dış kutu satırın tüm yüksekliğini kaplıyor
+                (sticky'nin sınırı bu), içindeki görsel ekrana sabitleniyor. */}
+            <div className="col-span-12 md:col-span-6">
+              <Reveal className="relative overflow-hidden @container h-[60svh] md:h-[100svh] md:sticky md:top-0">
+                {/* Gömü kendi oranını koruyup sütunu dolduruyor; taşan kenar
+                    ortadan kırpılıyor (cover). */}
+                <InstagramEmbed
+                  kind="p"
+                  code={aboutPost.code}
+                  title="Aurum Design Studio — Instagram gönderisi"
+                  ratio={aboutPost.ratio}
+                  cover
+                />
+              </Reveal>
+            </div>
+
+            {/* Sağ sütun dört konuya ayrılıyor; aralarındaki büyük boşluk
+                kaydırmaya ritim veriyor — her blok kendi başına okunuyor. */}
+            <div className="col-span-12 md:col-span-6 px-4 md:px-10 py-16 md:py-[22svh] flex flex-col gap-[16svh] md:gap-[26svh]">
+              <Block index="01" label="Hakkımızda">
+                <p className="editorial-lg max-w-[46ch]">{studio.lede}</p>
+                <p className="editorial mt-8 max-w-[54ch]">{studio.intro}</p>
+                <p className="editorial mt-5 max-w-[54ch]">{studio.scope}</p>
+              </Block>
+
+              {/* Stüdyonun kendi anlatısı — eskiden ayrı bir bantta duruyordu;
+                  sabit görselin yanında akan metnin gövdesi artık bu. */}
+              <Block index="02" label="Vaadimiz" delay={0.06}>
+                <p className="editorial-lg max-w-[46ch]">{studio.promise}</p>
+              </Block>
+
+              <Block index="03" label="Stüdyo" delay={0.06}>
+                <div className="editorial max-w-[54ch] flex flex-col gap-6">
+                  {studio.about.map((para, i) => (
+                    <p key={i}>{para}</p>
+                  ))}
+                </div>
+              </Block>
+
+              {/* Künye — okumak istemeyen için aynı bilgi rakamla */}
+              <Block index="04" label="Künye" delay={0.06}>
+                <dl className="grid grid-cols-2 gap-x-8 gap-y-2 max-w-[54ch]">
+                  <Fact label="Merkez" value={`${studio.city}, ${studio.province}`} />
+                  <Fact label="Bölge" value={studio.region} />
+                  <Fact label="Katalog" value={`${projects.length} proje`} />
+                  <Fact label="Stüdyo" value={`${studio.team.length} kurucu ortak`} />
+                </dl>
+
+                <div className="flex flex-wrap gap-x-8 gap-y-3 mt-12">
+                  <Link href="/hakkimizda" className="label u-link">
+                    Hakkımızda
+                  </Link>
+                  <Link href="/bilgi" className="label u-link">
+                    Hizmetler
+                  </Link>
+                  <Link href="/iletisim" className="label u-link">
+                    Brief Gönder
+                  </Link>
+                </div>
+              </Block>
+            </div>
+          </div>
+        </section>
+
+        {/* Kategoriler — tek satır, yana kayan şerit */}
+        <CatalogSection />
+
+        <ReelsStrip />
+
+        {/* Blog */}
+        <section className="border-t rule py-16 min-h-[100svh] flex flex-col justify-center">
+          <SectionHead
+            title="Blog"
+            description="Malzeme denemeleri ve şantiye notları."
+            href="/blog"
+            action="Tüm Yazılar"
+          />
+          <BlogCurtainGrid posts={posts.slice(0, 3)} />
+        </section>
       </main>
+      <Footer />
+    </>
+  );
+}
+
+/**
+ * Sabit görselin yanında akan metnin tek bir konusu: solda sıra numarası,
+ * üstte konu başlığı, altında gövde. Bloklar arasındaki boşluğu sütunun
+ * kendisi veriyor.
+ */
+function Block({
+  index,
+  label,
+  delay = 0,
+  children,
+}: {
+  index: string;
+  label: string;
+  delay?: number;
+  children: React.ReactNode;
+}) {
+  return (
+    <Reveal delay={delay}>
+      <div className="flex items-baseline gap-4 border-t rule pt-4">
+        <span className="label">{index}</span>
+        <span className="label">{label}</span>
+      </div>
+      <div className="mt-8">{children}</div>
+    </Reveal>
+  );
+}
+
+/** Hakkımızda bandındaki künye satırı: etiket üstte, değer altta. */
+function Fact({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="border-t rule py-3">
+      <dt className="label">{label}</dt>
+      <dd className="editorial mt-1">{value}</dd>
     </div>
   );
 }

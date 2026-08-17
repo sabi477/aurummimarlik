@@ -1,26 +1,225 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Faculty Department'ın açık, sıcak krem zemini */
+  --paper: #f4f1e9;
+  --paper-2: #ece8dd;
+  --paper-3: #dcd4c6;
+  /* Siyaha yakın ama sıcak mürekkep — tam siyah değil */
+  --ink: #1c1815;
+  /* İkincil gri: künye, konum ve meta satırları bu tonda */
+  --ink-2: #8a8378;
+  /* Near-black used by the editorial collection pages */
+  --void: #0e0b08;
+  --amber: #d98a2b;
+  --umber: #b4551f;
+  --nav-height: 52px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-paper: var(--paper);
+  --color-paper-2: var(--paper-2);
+  --color-paper-3: var(--paper-3);
+  --color-ink: var(--ink);
+  --color-muted: var(--ink-2);
+  --color-void: var(--void);
+  --color-amber: var(--amber);
+  --color-umber: var(--umber);
+
+  --font-sans: var(--font-montserrat);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+html {
+  scroll-behavior: smooth;
+}
+
+/* Tek aile: Montserrat. Ölçek buradan kalibre edilir — okunurluk için
+   gövde 14px, etiketler 10px. */
+body {
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-montserrat), "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* iOS Safari, yazı boyu 16px'in altındaki bir alana odaklanınca sayfayı
+   kendiliğinden yakınlaştırıyor ve düzen kayıyor. Dar ekranda form
+   alanlarını 16px'e sabitliyoruz; tasarım ölçeği masaüstünde değişmiyor. */
+@media (max-width: 767px) {
+  input,
+  textarea,
+  select {
+    font-size: 16px;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Tüm özel sınıflar `components` katmanında yaşar; böylece `hidden`,
+   `text-[...]` gibi Tailwind yardımcıları bunları her zaman ezebilir. */
+@layer components {
+
+/* ── Hairlines ────────────────────────────────────────────────
+   The whole layout is held together by 1px rules in the ink
+   colour at low opacity. */
+.rule {
+  border-color: color-mix(in srgb, var(--ink) 22%, transparent);
+}
+.rule-invert {
+  border-color: color-mix(in srgb, #ffffff 22%, transparent);
+}
+
+/* ── Link underline that grows from the left ─────────────────── */
+.u-link {
+  position: relative;
+  display: inline-block;
+}
+.u-link::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  height: 1px;
+  width: 100%;
+  background: currentColor;
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.u-link:hover::after,
+.u-link[data-active="true"]::after {
+  transform: scaleX(1);
+}
+
+/* ── Metin ölçeği ─────────────────────────────────────────────
+   Gövde okunur puntoda; etiketler küçük, versal ve geniş aralıklı. */
+.editorial {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.75;
+}
+.editorial-lg {
+  font-size: 17px;
+  font-weight: 300;
+  line-height: 1.6;
+}
+.editorial a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* Sayfa girişi: dar ölçü, sola yaslı açılış paragrafı. */
+.intro {
+  font-size: 15px;
+  font-weight: 300;
+  line-height: 1.7;
+  max-width: 56ch;
+}
+
+.label {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  line-height: 1.3;
+  color: var(--ink-2);
+}
+
+/* Kart künyesi: "Ad, Rol" üstte; altında konum gri versal. */
+.entry-title {
+  font-size: 14px;
+  font-weight: 400;
+  line-height: 1.4;
+}
+.entry-meta {
+  font-size: 10px;
+  font-weight: 500;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  line-height: 1.3;
+  color: var(--ink-2);
+  margin-top: 5px;
+}
+
+/* Başlıklar: ince ağırlıkta Montserrat, sıkı harf aralığı */
+.display {
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+/* ── Superscript count next to nav / category labels ──────────── */
+.count {
+  font-size: 0.62em;
+  vertical-align: super;
+  line-height: 0;
+  margin-left: 0.25em;
+  opacity: 0.65;
+}
+
+/* ── Native selects restyled to the flat hairline rows ────────── */
+.spec-select {
+  appearance: none;
+  background: transparent;
+  border: 0;
+  outline: 0;
+  color: inherit;
+  font: inherit;
+  text-align: right;
+  cursor: pointer;
+  padding-right: 1.25rem;
+}
+
+/* ── Scroll containers keep their rails invisible ─────────────── */
+.no-bar {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+.no-bar::-webkit-scrollbar {
+  display: none;
+}
+
+/* ── Film grain over the CSS-generated imagery ────────────────── */
+.grain::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.07;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+}
+/* /@layer components */
+
+/* ── Reveal ───────────────────────────────────────────────────── */
+@keyframes riseIn {
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.rise {
+  opacity: 0;
+  transform: translateY(24px);
+  animation: riseIn 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rise {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  html {
+    scroll-behavior: auto;
+  }
 }
