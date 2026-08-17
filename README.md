@@ -1,36 +1,60 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Aurum Design Studio
 
-## Getting Started
+Mimarlık, iç mimarlık ve mimari görselleştirme stüdyosunun tanıtım sitesi.
+Next.js 16 (App Router, Turbopack) ve Tailwind CSS 4 ile kurulu; tüm sayfalar
+statik olarak önceden basılıyor.
 
-First, run the development server:
+## Geliştirme
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+http://localhost:3000 adresinde açılır.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Yayın için build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Site adresi, kanonik bağlantılar ile `sitemap.xml` ve `robots.txt` içine
+**build sırasında** gömülüyor. Bu yüzden değişken yalnızca çalışma anında
+değil, derlemede de tanımlı olmalı:
 
-## Learn More
+```bash
+NEXT_PUBLIC_SITE_URL=https://alan-adiniz.com npm run build
+npm start
+```
 
-To learn more about Next.js, take a look at the following resources:
+Vercel gibi bir platformda değişkeni proje ayarlarından tanımlamak yeterli.
+Örnek dosya: [`.env.example`](.env.example). Tanımlanmazsa
+`http://localhost:3000` varsayılır — yayına çıkarken mutlaka ayarlanmalı.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Komutlar
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+| Komut | İş |
+| --- | --- |
+| `npm run dev` | Geliştirme sunucusu |
+| `npm run build` | Üretim derlemesi (TypeScript denetimi dahil) |
+| `npm start` | Derlenmiş siteyi sunar |
+| `npm run lint` | ESLint |
 
-## Deploy on Vercel
+## Yapı
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `src/app` — sayfalar. Dinamik olanlar: `projeler/[slug]`,
+  `koleksiyonlar/[slug]`, `blog/[slug]`; hepsi `generateStaticParams` ile
+  önceden üretiliyor. `sitemap.ts` ve `robots.ts` de burada.
+- `src/components` — arayüz parçaları (hero, galeri görüntüleyici, konum
+  haritası, Instagram gömüleri, perde açılışlı kartlar…).
+- `src/lib` — içerik ve yardımcılar: `data.ts` (projeler, koleksiyonlar,
+  yazılar, stüdyo künyesi), `frames.ts` (görsel kompozisyonları), `geo.ts`
+  (harita koordinatları), `site.ts` (yayın adresi).
+- `public/images` — yerel görseller.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Notlar
+
+- Konum haritası bir harita kütüphanesi kullanmıyor: koordinat döşemeye
+  çevrilip CARTO'nun etiketsiz açık teması gri tonlamayla basılıyor.
+  Künye zorunlu — “© OpenStreetMap · CARTO” satırı kaldırılmamalı.
+- Blog yazılarının gövdeleri `src/lib/data.ts` içinde örnek metinlerdir;
+  yayına çıkmadan önce gerçek içerikle değiştirilmeli.
+- `src/lib/data.ts` içindeki `TODO` satırları (kurucu adları, LinkedIn
+  hesabı) doğrulanmayı bekliyor.
