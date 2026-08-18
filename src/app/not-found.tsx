@@ -27,8 +27,8 @@ export default function NotFound() {
               </Link>
             </li>
             <li>
-              <Link href="/koleksiyonlar" className="u-link">
-                Koleksiyonlar →
+              <Link href="/blog" className="u-link">
+                Blog →
               </Link>
             </li>
             <li>

@@ -111,8 +111,8 @@ export default function Hero() {
       >
         <div className="absolute left-4 md:left-5 bottom-6 text-[12px] max-w-[280px]">
           <p className="opacity-90">{studio.tagline}</p>
-          <Link href="/koleksiyonlar/kiyi" className="u-link mt-3 inline-block">
-            Kıyı Koleksiyonunu Keşfedin
+          <Link href="/projeler" className="u-link mt-3 inline-block">
+            Projeleri Keşfedin
           </Link>
         </div>
 

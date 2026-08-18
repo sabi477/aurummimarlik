@@ -6,7 +6,6 @@ import { AnimatePresence, motion } from "framer-motion";
 import clsx from "clsx";
 import {
   categoryName,
-  collectionName,
   galleryFor,
   projects,
   type Project,
@@ -31,7 +30,7 @@ export default function ProjectDetail({ project }: { project: Project }) {
   const [zoomed, setZoomed] = useState<number | null>(null);
 
   const related = projects
-    .filter((p) => p.collection === project.collection && p.slug !== project.slug)
+    .filter((p) => p.category === project.category && p.slug !== project.slug)
     .slice(0, 4);
 
   return (
@@ -120,25 +119,8 @@ export default function ProjectDetail({ project }: { project: Project }) {
                     value={`${project.area.toLocaleString("tr-TR")} m²`}
                   />
                   <Meta label="Durum" value={project.status} />
-                  <Meta
-                    label="Koleksiyon"
-                    value={collectionName(project.collection)}
-                  />
                   <Meta label="Kategori" value={categoryName(project.category)} />
                 </dl>
-              </Accordion>
-
-              <Accordion title="Koleksiyonu Keşfet">
-                <p className="editorial mb-3 max-w-[54ch]">
-                  Bu proje {collectionName(project.collection)} koleksiyonunun bir
-                  parçası.
-                </p>
-                <Link
-                  href={`/koleksiyonlar/${project.collection}`}
-                  className="label u-link"
-                >
-                  {collectionName(project.collection)} Koleksiyonu
-                </Link>
               </Accordion>
 
               <Accordion title="Malzeme Örnekleri">
@@ -218,11 +200,11 @@ export default function ProjectDetail({ project }: { project: Project }) {
         <section className="border-t rule py-6">
           <div className="flex items-baseline justify-between px-4 md:px-5 text-[12px]">
             <p className="display text-[15px]">
-              {collectionName(project.collection)} Koleksiyonundan
+              {categoryName(project.category)} Projelerinden
               <span className="count">{related.length}</span>
             </p>
             <Link
-              href={`/projeler?koleksiyon=${project.collection}`}
+              href={`/projeler?kategori=${project.category}`}
               className="label u-link"
             >
               Tümü

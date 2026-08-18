@@ -7,9 +7,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import clsx from "clsx";
 import {
   categories,
-  collections,
   countByCategory,
-  countByCollection,
   projects,
   studio,
 } from "@/lib/data";
@@ -32,7 +30,7 @@ export default function Header({ variant = "solid" }: Props) {
   const pathname = usePathname();
   const { count, setOpen: setCartOpen } = useCart();
   const [scrolled, setScrolled] = useState(false);
-  const [menu, setMenu] = useState<null | "projeler" | "koleksiyonlar">(null);
+  const [menu, setMenu] = useState<null | "projeler">(null);
   const [mobile, setMobile] = useState(false);
   const [search, setSearch] = useState(false);
 
@@ -103,15 +101,6 @@ export default function Header({ variant = "solid" }: Props) {
               data-active={pathname.startsWith("/projeler") || undefined}
             >
               Projeler
-            </button>
-            <button
-              type="button"
-              onMouseEnter={() => setMenu("koleksiyonlar")}
-              onFocus={() => setMenu("koleksiyonlar")}
-              className={link}
-              data-active={pathname.startsWith("/koleksiyonlar") || undefined}
-            >
-              Koleksiyonlar
             </button>
             <Link
               href="/hakkimizda"
@@ -184,7 +173,7 @@ export default function Header({ variant = "solid" }: Props) {
                 dark ? "bg-void rule-invert" : "bg-paper rule",
               )}
             >
-              {menu === "projeler" ? <ProjectsMenu /> : <CollectionsMenu />}
+              <ProjectsMenu />
             </motion.div>
           )}
         </AnimatePresence>
@@ -206,15 +195,6 @@ export default function Header({ variant = "solid" }: Props) {
                   <MobileLink key={c.slug} href={`/projeler?kategori=${c.slug}`}>
                     {c.name}
                     <span className="count">{countByCategory(c.slug)}</span>
-                  </MobileLink>
-                ))}
-              </MobileGroup>
-
-              <MobileGroup title="Koleksiyonlar" href="/koleksiyonlar">
-                {collections.map((c) => (
-                  <MobileLink key={c.slug} href={`/koleksiyonlar/${c.slug}`}>
-                    {c.name}
-                    <span className="count">{countByCollection(c.slug)}</span>
                   </MobileLink>
                 ))}
               </MobileGroup>
@@ -314,37 +294,6 @@ function ProjectsMenu() {
     </div>
   );
 }
-
-function CollectionsMenu() {
-  return (
-    <div className="px-4 md:px-5 py-8 text-[12px]">
-      <div className="flex items-baseline justify-between mb-5">
-        <p className="opacity-50">Koleksiyonlar</p>
-        <Link href="/koleksiyonlar" className="u-link">
-          Tümünü Gör →
-        </Link>
-      </div>
-      <div className="grid grid-cols-6 gap-4">
-        {collections.map((c) => (
-          <Link key={c.slug} href={`/koleksiyonlar/${c.slug}`} className="group">
-            <Frame
-              seed={`kol-${c.slug}`}
-              tone={c.tone}
-              className="aspect-[3/4] transition-transform duration-1000 group-hover:scale-[1.02]"
-            />
-            <p className="mt-2">
-              {c.name}
-              <span className="count">{countByCollection(c.slug)}</span>
-            </p>
-            <p className="opacity-50">{c.year}</p>
-          </Link>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-/* ── Mobil yardımcıları ───────────────────────────────────────────── */
 
 function MobileGroup({
   title,

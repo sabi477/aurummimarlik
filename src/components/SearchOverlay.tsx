@@ -3,13 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { AnimatePresence, motion } from "framer-motion";
-import {
-  categoryName,
-  collectionName,
-  collections,
-  posts,
-  projects,
-} from "@/lib/data";
+import { categoryName, postHref, posts, projects } from "@/lib/data";
 import Frame from "./Frame";
 
 const EASE = [0.16, 1, 0.3, 1] as const;
@@ -56,7 +50,7 @@ export default function SearchOverlay({
 
   const results = useMemo(() => {
     const n = normalize(q.trim());
-    if (n.length < 2) return { projects: [], collections: [], posts: [] };
+    if (n.length < 2) return { projects: [], posts: [] };
     const match = (...fields: string[]) =>
       fields.some((f) => normalize(f).includes(n));
 
@@ -68,12 +62,10 @@ export default function SearchOverlay({
             p.location,
             p.lede,
             categoryName(p.category),
-            collectionName(p.collection),
             p.materials.join(" "),
           ),
         )
         .slice(0, 6),
-      collections: collections.filter((c) => match(c.name, c.tagline)).slice(0, 3),
       posts: posts.filter((p) => match(p.title, p.excerpt, p.kind)).slice(0, 3),
     };
   }, [q]);
@@ -81,7 +73,6 @@ export default function SearchOverlay({
   const empty =
     q.trim().length >= 2 &&
     !results.projects.length &&
-    !results.collections.length &&
     !results.posts.length;
 
   return (
@@ -167,33 +158,15 @@ export default function SearchOverlay({
                 </div>
               )}
 
-              {(!!results.collections.length || !!results.posts.length) && (
+              {!!results.posts.length && (
                 <div className="mt-8 grid md:grid-cols-2 gap-8 text-[12px]">
-                  {!!results.collections.length && (
-                    <div>
-                      <p className="opacity-50 mb-3">Koleksiyonlar</p>
-                      <ul className="flex flex-col gap-2">
-                        {results.collections.map((c) => (
-                          <li key={c.slug}>
-                            <Link
-                              href={`/koleksiyonlar/${c.slug}`}
-                              onClick={onClose}
-                              className="u-link"
-                            >
-                              {c.name} — {c.tagline}
-                            </Link>
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
                   {!!results.posts.length && (
                     <div>
                       <p className="opacity-50 mb-3">Günlük</p>
                       <ul className="flex flex-col gap-2">
                         {results.posts.map((p) => (
                           <li key={p.slug}>
-                            <Link href="/blog" onClick={onClose} className="u-link">
+                            <Link href={postHref(p)} onClick={onClose} className="u-link">
                               {p.title}
                             </Link>
                           </li>

@@ -6,9 +6,7 @@ import { useMemo, useState } from "react";
 import clsx from "clsx";
 import {
   categories,
-  collections,
   countByCategory,
-  countByCollection,
   projects,
 } from "@/lib/data";
 import ProjectCard from "./ProjectCard";
@@ -35,7 +33,6 @@ export default function ProjectsBrowser() {
 
   const kategori = params.get("kategori");
   const filtre = params.get("filtre");
-  const koleksiyon = params.get("koleksiyon");
 
   const [size, setSize] = useState<Size>("M");
   const [sort, setSort] = useState<Sort>("yeni");
@@ -58,7 +55,6 @@ export default function ProjectsBrowser() {
   const list = useMemo(() => {
     let out = [...projects];
     if (kategori) out = out.filter((p) => p.category === kategori);
-    if (koleksiyon) out = out.filter((p) => p.collection === koleksiyon);
     if (filtre === "yeni") out = out.filter((p) => p.isNew);
     if (filtre === "devam") out = out.filter((p) => p.status !== "Tamamlandı");
 
@@ -79,17 +75,15 @@ export default function ProjectsBrowser() {
         );
     }
     return out;
-  }, [kategori, koleksiyon, filtre, sort]);
+  }, [kategori, filtre, sort]);
 
   const title = kategori
     ? categories.find((c) => c.slug === kategori)?.name ?? "Projeler"
-    : koleksiyon
-      ? collections.find((c) => c.slug === koleksiyon)?.name ?? "Projeler"
-      : filtre === "yeni"
-        ? "Yeni Tamamlanan"
-        : filtre === "devam"
-          ? "Devam Eden"
-          : "Tüm Projeler";
+    : filtre === "yeni"
+      ? "Yeni Tamamlanan"
+      : filtre === "devam"
+        ? "Devam Eden"
+        : "Tüm Projeler";
 
   const active = (cond: boolean) => (cond ? "true" : undefined);
 
@@ -125,7 +119,7 @@ export default function ProjectsBrowser() {
             <ul className="flex flex-col gap-[5px]">
               <SideItem
                 label="Tüm Projeler"
-                active={!kategori && !filtre && !koleksiyon}
+                active={!kategori && !filtre}
                 onClick={() => router.push("/projeler", { scroll: false })}
               />
               <SideItem
@@ -161,23 +155,6 @@ export default function ProjectsBrowser() {
                     active={kategori === c.slug}
                     onClick={() =>
                       setParam("kategori", kategori === c.slug ? null : c.slug)
-                    }
-                  />
-                ))}
-              </ul>
-            </div>
-
-            <div>
-              <p className="label mb-2">Koleksiyonlar</p>
-              <ul className="flex flex-col gap-[5px]">
-                {collections.map((c) => (
-                  <SideItem
-                    key={c.slug}
-                    label={c.name}
-                    count={countByCollection(c.slug)}
-                    active={koleksiyon === c.slug}
-                    onClick={() =>
-                      setParam("koleksiyon", koleksiyon === c.slug ? null : c.slug)
                     }
                   />
                 ))}
@@ -233,7 +210,7 @@ export default function ProjectsBrowser() {
                   {s.label}
                 </button>
               ))}
-              {(kategori || koleksiyon || filtre) && (
+              {(kategori || filtre) && (
                 <button
                   type="button"
                   onClick={() => router.push("/projeler", { scroll: false })}

@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { categories, collections, studio } from "@/lib/data";
+import { categories, studio } from "@/lib/data";
 
 export default function Footer() {
   return (
@@ -24,14 +24,6 @@ export default function Footer() {
           <FooterLink href="/projeler?filtre=devam">Devam Eden</FooterLink>
           {categories.map((c) => (
             <FooterLink key={c.slug} href={`/projeler?kategori=${c.slug}`}>
-              {c.name}
-            </FooterLink>
-          ))}
-        </FooterCol>
-
-        <FooterCol title="Koleksiyonlar">
-          {collections.map((c) => (
-            <FooterLink key={c.slug} href={`/koleksiyonlar/${c.slug}`}>
               {c.name}
             </FooterLink>
           ))}
